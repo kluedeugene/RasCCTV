@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "582045769298",
+    "project_id": "fcmtest-ee6c4",
+    "storage_bucket": "fcmtest-ee6c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582045769298:android:4c5d1eaf489924faee898b",
+        "android_client_info": {
+          "package_name": "com.company.RasCCTV"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582045769298-pkh3omav63n1bj83k0td832de0ec352b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDREs2CJFjXpcW2muC9AjaaPieVPXA0R3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "582045769298-pkh3omav63n1bj83k0td832de0ec352b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
