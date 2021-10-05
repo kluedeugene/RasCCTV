@@ -3,7 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/PROJECT/CanvasTest/AutoOff-master/RasCCTV/app/src/main/res/layout/activity_main.xml" value="0.17395833333333333" />
+        <entry key="..\:/PROJECT/CanvasTest/AutoOff-master/RasCCTV/app/src/main/res/layout/activity_intro.xml" value="0.3359375" />
+        <entry key="..\:/PROJECT/CanvasTest/AutoOff-master/RasCCTV/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/motion/AndroidStudioProjects/RasCCTV/app/src/main/res/layout/activity_main.xml" value="0.3828571428571429" />
       </map>
     </option>
