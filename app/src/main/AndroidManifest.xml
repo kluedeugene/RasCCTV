@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.company.RasCCTV">
-
-    <!--   INTERNET 퍼미션 추가!   -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- INTERNET 퍼미션 추가! -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -14,21 +13,31 @@
         android:theme="@style/Theme.RasCCTV">
 
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".IntroActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
-        <!--   서비스를 추가하고 인텐트 필터를 설정한다.   -->
-        <service android:name=".MyFirebaseMessaging" android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
 
+        </activity>
+        <!-- 서비스를 추가하고 인텐트 필터를 설정한다. -->
+        <service
+            android:name=".MyFirebaseMessaging"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> <!-- 알림메시지 아이콘 변경 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@color/design_default_color_primary" />
     </application>
 
 </manifest>
