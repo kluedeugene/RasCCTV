@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Fcm 부분
+    // TODO: PUSH 메시지 제대로 전송 안됨.
+        //        Fcm 부분
         Intent fcm = new Intent(getApplicationContext(), MyFirebaseMessaging.class);
         startService(fcm);
 

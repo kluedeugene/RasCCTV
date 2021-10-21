@@ -19,6 +19,7 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
+//        기존 로그인 정보가 없는 경우는 로그인 메인 화면으로 이동하고, 로그인 정보가 있는 경우는 앱 메인 화면으로 이동합니다.
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
             @Override
             public void onResult(UserStateDetails result) {
