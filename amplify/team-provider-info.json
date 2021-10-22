@@ -1,0 +1,33 @@
+{
+    "staging": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-rascctv-staging-42257-authRole",
+            "UnauthRoleArn": "arn:aws:iam::226924217008:role/amplify-rascctv-staging-42257-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::226924217008:role/amplify-rascctv-staging-42257-authRole",
+            "Region": "ap-northeast-2",
+            "DeploymentBucketName": "amplify-rascctv-staging-42257-deployment",
+            "UnauthRoleName": "amplify-rascctv-staging-42257-unauthRole",
+            "StackName": "amplify-rascctv-staging-42257",
+            "StackId": "arn:aws:cloudformation:ap-northeast-2:226924217008:stack/amplify-rascctv-staging-42257/92202910-3226-11ec-9547-0a230a9b73fc",
+            "AmplifyAppId": "d1k5opo4zu5isk"
+        },
+        "categories": {
+            "auth": {
+                "rascctv9561ff79": {}
+            },
+            "function": {
+                "S3Trigger61135270": {
+                    "deploymentBucketName": "amplify-rascctv-staging-42257-deployment",
+                    "s3Key": "amplify-builds/S3Trigger61135270-72563545444a54585635-build.zip"
+                }
+            },
+            "notifications": {
+                "Pinpoint": {
+                    "Name": "RasCCTV3MCuE-staging",
+                    "Id": "348373b4ec07446a8cee2d4cf76f78c6",
+                    "Region": "ap-northeast-2"
+                }
+            }
+        }
+    }
+}
