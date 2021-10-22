@@ -51,5 +51,4 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         Log.d(TAG, "생성된 토큰 : "+s);
     }
 
-
 }
