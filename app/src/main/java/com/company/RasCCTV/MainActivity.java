@@ -15,6 +15,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.content.Context;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobile.client.UserStateDetails;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.UserStateDetails;
@@ -41,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    // TODO: PUSH 메시지 제대로 전송 안됨.
+
         //        Fcm 부분
         Intent fcm = new Intent(getApplicationContext(), MyFirebaseMessaging.class);
         startService(fcm);
