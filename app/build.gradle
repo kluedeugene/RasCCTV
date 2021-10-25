@@ -23,24 +23,34 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
+
+    // Amplify core dependency
+    implementation 'com.amplifyframework:core:1.28.1'
+
+    // Support for Java 8 features
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    implementation('com.amazonaws:aws-android-sdk-mobile-client:2.13.+@aar') { transitive = true }
-    implementation('com.amazonaws:aws-android-sdk-auth-userpools:2.13.+@aar') { transitive = true }
-    implementation('com.amazonaws:aws-android-sdk-auth-ui:2.13.+@aar') { transitive = true }
-    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.13.+'
-    implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.13.+'
-    implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.13.+'
+    implementation('com.amazonaws:aws-android-sdk-mobile-client:2.33.0') { transitive = true }
+    implementation('com.amazonaws:aws-android-sdk-auth-userpools:2.13.7') { transitive = true }
+    implementation('com.amazonaws:aws-android-sdk-auth-ui:2.13.7') { transitive = true }
 
-    implementation 'com.amazonaws:aws-android-sdk-s3:2.6.+'
-    implementation 'com.amazonaws:aws-android-sdk-cognito:2.6.+'
+
+
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.33.0'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
+    implementation 'com.amplifyframework:aws-storage-s3:1.28.1'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.28.1'
+
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:28.4.1')
 

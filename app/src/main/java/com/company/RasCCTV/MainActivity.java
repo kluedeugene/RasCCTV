@@ -9,17 +9,17 @@ import com.amazonaws.util.IOUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
-
 import android.content.Context;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.storage.StorageItem;
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -32,6 +32,12 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferService;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.*;
+
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -64,6 +70,15 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.util.IOUtils;
 
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+
+
+import com.amazonaws.services.s3.model.Bucket;
+
+import java.util.List;
+
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -78,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
 
 
 //    S3관련-----------------------------------------------------------
-    private final String KEY = "xxx";
-    private final String SECRET = "xxxxxx";
+    private final String KEY = " ";
+    private final String SECRET = "";
 
     private AmazonS3Client s3Client;
     private BasicAWSCredentials credentials;
@@ -105,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
             uploadFile();
         } else if (i == R.id.btn_download) {
             downloadFile();
+        }else if (i == R.id.btn_list) {
+            getList();
         }
     }
 
@@ -113,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //----------------------------------------------------------------------------------------------------S3
+
+
         imageView = findViewById(R.id.img_file);
         edtFileName = findViewById(R.id.edt_file_name);
         tvFileName = findViewById(R.id.tv_file_name);
@@ -121,11 +140,24 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         findViewById(R.id.btn_choose_file).setOnClickListener(this);
         findViewById(R.id.btn_upload).setOnClickListener(this);
         findViewById(R.id.btn_download).setOnClickListener(this);
+        findViewById(R.id.btn_list).setOnClickListener(this);
 
 
 
         credentials = new BasicAWSCredentials(KEY, SECRET);
         s3Client = new AmazonS3Client(credentials);
+
+        try {
+            // Add these lines to add the AWSCognitoAuthPlugin and AWSS3StoragePlugin plugins
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSS3StoragePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i("MyAmplifyApp", "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
+        }
+
 //------------------------------------------------------------------------------------------------------S3
         //        Fcm 부분
         Intent fcm = new Intent(getApplicationContext(), MyFirebaseMessaging.class);
@@ -149,116 +181,155 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
 
     }
 
+
+private void getList(){
+    Log.i("MyAmplifyApp", "getList call " );
+    Toast.makeText(this, "------------getList call-------------", Toast.LENGTH_LONG).show();
+    Amplify.Storage.list("",
+            result -> {
+                for (StorageItem item : result.getItems()) {
+                    Log.i("MyAmplifyApp", "Item: " + item.getKey());
+                }
+            },
+            error -> Log.e("MyAmplifyApp", "List failure", error)
+    );
+}
+
+
     //------------------------------------------------------------------------------------------------------------S3
     private void uploadFile() {
 
-        if (fileUri != null) {
-            final String fileName = edtFileName.getText().toString();
+        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
 
-            if (!validateInputFileName(fileName)) {
-                return;
-            }
-
-            final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                    "/" + fileName);
-
-            createFile(getApplicationContext(), fileUri, file);
-
-            TransferUtility transferUtility =
-                    TransferUtility.builder()
-                            .context(getApplicationContext())
-                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                            .s3Client(s3Client)
-                            .build();
-
-            TransferObserver uploadObserver =
-                    transferUtility.upload("jsaS3/" + fileName + "." + getFileExtension(fileUri), file);
-
-            uploadObserver.setTransferListener(new TransferListener() {
-
-                @Override
-                public void onStateChanged(int id, TransferState state) {
-                    if (TransferState.COMPLETED == state) {
-                        Toast.makeText(getApplicationContext(), "Upload Completed!", Toast.LENGTH_SHORT).show();
-
-                        file.delete();
-                    } else if (TransferState.FAILED == state) {
-                        file.delete();
-                    }
-                }
-
-                @Override
-                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                    float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-                    int percentDone = (int) percentDonef;
-
-                    tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
-                }
-
-                @Override
-                public void onError(int id, Exception ex) {
-                    ex.printStackTrace();
-                }
-
-            });
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(exampleFile));
+            writer.append("Example file contents");
+            writer.close();
+        } catch (Exception exception) {
+            Log.e("MyAmplifyApp", "Upload failed", exception);
         }
+
+        Amplify.Storage.uploadFile(
+                "ExampleKey",
+                exampleFile,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        );
+
+//        if (fileUri != null) {
+//            final String fileName = edtFileName.getText().toString();
+//
+//            if (!validateInputFileName(fileName)) {
+//                return;
+//            }
+//
+//            final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                    "/" + fileName);
+//
+//            createFile(getApplicationContext(), fileUri, file);
+//
+//            TransferUtility transferUtility =
+//                    TransferUtility.builder()
+//                            .context(getApplicationContext())
+//                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+//                            .s3Client(s3Client)
+//                            .build();
+//
+//            TransferObserver uploadObserver =
+//                    transferUtility.upload("public/" + fileName + "." + getFileExtension(fileUri), file);
+//
+//            uploadObserver.setTransferListener(new TransferListener() {
+//
+//                @Override
+//                public void onStateChanged(int id, TransferState state) {
+//                    if (TransferState.COMPLETED == state) {
+//                        Toast.makeText(getApplicationContext(), "Upload Completed!", Toast.LENGTH_SHORT).show();
+//
+//                        file.delete();
+//                    } else if (TransferState.FAILED == state) {
+//                        file.delete();
+//                    }
+//                }
+//
+//                @Override
+//                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+//                    float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+//                    int percentDone = (int) percentDonef;
+//
+//                    tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+//                }
+//
+//                @Override
+//                public void onError(int id, Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//
+//            });
+//        }
     }
 
     private void downloadFile() {
-        if (fileUri != null) {
+        Amplify.Storage.downloadFile(
+                "ciao.txt",
+                new File(getApplicationContext().getFilesDir() + "/download.txt"),
+                result -> Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getName()),
+                error -> Log.e("MyAmplifyApp",  "Download Failure", error)
+        );
 
-            final String fileName = edtFileName.getText().toString();
-
-            if (!validateInputFileName(fileName)) {
-                return;
-            }
-
-            try {
-                final File localFile = File.createTempFile("images", getFileExtension(fileUri));
-
-                TransferUtility transferUtility =
-                        TransferUtility.builder()
-                                .context(getApplicationContext())
-                                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                                .s3Client(s3Client)
-                                .build();
-
-                TransferObserver downloadObserver =
-                        transferUtility.download("jsaS3/" + fileName + "." + getFileExtension(fileUri), localFile);
-
-                downloadObserver.setTransferListener(new TransferListener() {
-
-                    @Override
-                    public void onStateChanged(int id, TransferState state) {
-                        if (TransferState.COMPLETED == state) {
-                            Toast.makeText(getApplicationContext(), "Download Completed!", Toast.LENGTH_SHORT).show();
-
-                            tvFileName.setText(fileName + "." + getFileExtension(fileUri));
-                            Bitmap bmp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                            imageView.setImageBitmap(bmp);
-                        }
-                    }
-
-                    @Override
-                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                        float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-                        int percentDone = (int) percentDonef;
-
-                        tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
-                    }
-
-                    @Override
-                    public void onError(int id, Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Toast.makeText(this, "Upload file before downloading", Toast.LENGTH_LONG).show();
-        }
+//        if (fileUri != null) {
+//
+//            final String fileName = edtFileName.getText().toString();
+//
+//            if (!validateInputFileName(fileName)) {
+//                return;
+//            }
+//
+//            try {
+//                final File localFile = File.createTempFile("images", getFileExtension(fileUri));
+//
+//                TransferUtility transferUtility =
+//                        TransferUtility.builder()
+//                                .context(getApplicationContext())
+//                                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+//                                .s3Client(s3Client)
+//                                .build();
+//
+//                TransferObserver downloadObserver =
+//                        transferUtility.download("public/" + fileName + "." + getFileExtension(fileUri), localFile);
+//
+//                downloadObserver.setTransferListener(new TransferListener() {
+//
+//                    @Override
+//                    public void onStateChanged(int id, TransferState state) {
+//                        if (TransferState.COMPLETED == state) {
+//                            Toast.makeText(getApplicationContext(), "Download Completed!", Toast.LENGTH_SHORT).show();
+//
+//                            tvFileName.setText(fileName + "." + getFileExtension(fileUri));
+//                            Bitmap bmp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//                            imageView.setImageBitmap(bmp);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+//                        float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+//                        int percentDone = (int) percentDonef;
+//
+//                        tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+//                    }
+//
+//                    @Override
+//                    public void onError(int id, Exception ex) {
+//                        ex.printStackTrace();
+//                    }
+//
+//                });
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            Toast.makeText(this, "Upload file before downloading", Toast.LENGTH_LONG).show();
+//        }
     }
 
 
