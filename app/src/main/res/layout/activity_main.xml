@@ -24,14 +24,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Choose File" />
+            android:text="Choose File"
+            />
 
-        <EditText
-            android:id="@+id/edt_file_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="File Name" />
+<!--        <EditText-->
+<!--            android:id="@+id/edt_file_name"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="2"-->
+<!--            android:hint="File Name" />-->
 
     </LinearLayout>
 
@@ -73,18 +74,30 @@
         android:layout_margin="5dp"
         android:text="File Name" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="5">
 
-        <ImageView
-            android:id="@+id/img_file"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_weight="3.7" />
+    <ListView
+        android:id="@+id/object_list_View"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
-    </LinearLayout>
+
+    </ListView>
+
+
+
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical"-->
+<!--        android:weightSum="5">-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/img_file"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:layout_weight="3.7" />-->
+
+<!--    </LinearLayout>-->
 
 </LinearLayout>

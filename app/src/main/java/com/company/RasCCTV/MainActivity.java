@@ -56,8 +56,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +78,8 @@ import com.amazonaws.services.s3.AmazonS3;
 
 import com.amazonaws.services.s3.model.Bucket;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -91,6 +95,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity implements  View.OnClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    public static final ArrayList<String> objectLIST = new ArrayList<String>();
 
 //    S3관련-----------------------------------------------------------
     private final String KEY = " ";
@@ -125,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
 //----------------------------------------------------------------------------------------------------S3
 
 
-        imageView = findViewById(R.id.img_file);
-        edtFileName = findViewById(R.id.edt_file_name);
+       // imageView = findViewById(R.id.img_file);
+//        edtFileName = findViewById(R.id.edt_file_name);
         tvFileName = findViewById(R.id.tv_file_name);
         tvFileName.setText("");
 
@@ -157,6 +163,11 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         } catch (AmplifyException error) {
             Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
         }
+
+
+        getList();
+
+
 
 //------------------------------------------------------------------------------------------------------S3
         //        Fcm 부분
@@ -182,17 +193,35 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     }
 
 
+
 private void getList(){
+
+
+  //  ArrayList<String> objectLIST = new ArrayList<>();
+
     Log.i("MyAmplifyApp", "getList call " );
     Toast.makeText(this, "------------getList call-------------", Toast.LENGTH_LONG).show();
+//    objectLIST.clear();
     Amplify.Storage.list("",
             result -> {
+                objectLIST.clear();
                 for (StorageItem item : result.getItems()) {
                     Log.i("MyAmplifyApp", "Item: " + item.getKey());
+                    objectLIST.add(item.getKey());
                 }
             },
             error -> Log.e("MyAmplifyApp", "List failure", error)
     );
+
+    ListView listView = (ListView)findViewById(R.id.object_list_View);
+
+    List<String> list = new ArrayList<>();
+
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,list);
+    listView.setAdapter(adapter);
+
+    list.addAll(objectLIST);
+
 }
 
 
@@ -210,7 +239,7 @@ private void getList(){
         }
 
         Amplify.Storage.uploadFile(
-                "ExampleKey",
+                "Example--Key",
                 exampleFile,
                 result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
                 storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
