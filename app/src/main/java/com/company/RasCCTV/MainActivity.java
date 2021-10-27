@@ -299,8 +299,10 @@ private void getList(){
 
     private void downloadFile() {
         Amplify.Storage.downloadFile(
-                "ciao.txt",
-                new File(getApplicationContext().getFilesDir() + "/download.txt"),
+                "testVideo.mp4",
+                //todo: 외부저장소로 저장해야함. s3 권한오류?
+                new File(Environment.getDataDirectory() + "/testVideo.mp4"),
+//                new File(getApplicationContext().getFilesDir() + "/download.mp4"),
                 result -> Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getName()),
                 error -> Log.e("MyAmplifyApp",  "Download Failure", error)
         );
