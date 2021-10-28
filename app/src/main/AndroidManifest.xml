@@ -48,14 +48,16 @@
         <service
             android:name=".MyFirebaseMessaging"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service> <!-- 알림메시지 아이콘 변경 -->
 
+
                 <meta-data
                     android:name="com.google.firebase.messaging.default_notification_icon"
+                    android:value="@string/default_notification_channel_id"
                     android:resource="@color/design_default_color_primary" />
 
     </application>
