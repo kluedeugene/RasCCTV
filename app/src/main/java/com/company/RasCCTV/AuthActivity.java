@@ -27,6 +27,7 @@ public class AuthActivity extends AppCompatActivity {
                     case SIGNED_IN:
                         Intent i = new Intent(AuthActivity.this, MainActivity.class);
                         startActivity(i);
+                        finish();
                         break;
                     case SIGNED_OUT:
                         showSignIn();

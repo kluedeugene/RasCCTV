@@ -19,15 +19,22 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <Button
-            android:id="@+id/btn_choose_file"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Choose File"
-            />
+<!--        <Button-->
+<!--            android:id="@+id/btn_choose_file"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="Choose File"-->
+<!--            />-->
 
-<!--        <EditText-->
+<!--        <Button-->
+<!--            android:id="@+id/btn_view_video"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="video view" />-->
+
+        <!--        <EditText-->
 <!--            android:id="@+id/edt_file_name"-->
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="wrap_content"-->
@@ -42,37 +49,37 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <Button
-            android:id="@+id/btn_upload"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Upload" />
+<!--        <Button-->
+<!--            android:id="@+id/btn_upload"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="Upload" />-->
 
-        <Button
-            android:id="@+id/btn_download"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Download" />
+<!--        <Button-->
+<!--            android:id="@+id/btn_download"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="Download" />-->
 
         <Button
             android:id="@+id/btn_list"
             android:layout_width="127dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="GetList" />
+            android:layout_weight="2"
+            android:text="Get Record List" />
 
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_file_name"
-        android:layout_width="351dp"
-        android:layout_height="75dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        android:text="File Name" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_file_name"-->
+<!--        android:layout_width="351dp"-->
+<!--        android:layout_height="75dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:layout_margin="5dp"-->
+<!--        android:text="File Name" />-->
 
 
     <ListView

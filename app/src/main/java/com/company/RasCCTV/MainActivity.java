@@ -56,6 +56,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -119,13 +121,18 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     public void onClick(View view) {
         int i = view.getId();
 
-        if (i == R.id.btn_choose_file) {
-            showChoosingFile();
-        } else if (i == R.id.btn_upload) {
-            uploadFile();
-        } else if (i == R.id.btn_download) {
-            downloadFile();
-        }else if (i == R.id.btn_list) {
+//        if (i == R.id.btn_choose_file) {
+//            showChoosingFile();
+//        } else if (i == R.id.btn_upload) {
+//            uploadFile();
+//        } else if (i == R.id.btn_download) {
+//            downloadFile();
+//        }else if (i == R.id.btn_view_video) {
+//            Intent intent = new Intent(getApplicationContext(), videoView.class);
+//            startActivity(intent);
+//        }else
+
+            if (i == R.id.btn_list) {
             getList();
         }
     }
@@ -137,15 +144,15 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         setContentView(R.layout.activity_main);
 //----------------------------------------------------------------------------------------------------S3
 
-
-       // imageView = findViewById(R.id.img_file);
+//        imageView = findViewById(R.id.img_file);
 //        edtFileName = findViewById(R.id.edt_file_name);
-        tvFileName = findViewById(R.id.tv_file_name);
-        tvFileName.setText("");
-
-        findViewById(R.id.btn_choose_file).setOnClickListener(this);
-        findViewById(R.id.btn_upload).setOnClickListener(this);
-        findViewById(R.id.btn_download).setOnClickListener(this);
+//        tvFileName = findViewById(R.id.tv_file_name);
+//        tvFileName.setText("");
+//
+//        findViewById(R.id.btn_choose_file).setOnClickListener(this);
+//        findViewById(R.id.btn_upload).setOnClickListener(this);
+//        findViewById(R.id.btn_download).setOnClickListener(this);
+//        findViewById(R.id.btn_view_video).setOnClickListener(this);
         findViewById(R.id.btn_list).setOnClickListener(this);
 
 
@@ -175,20 +182,20 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         startService(fcm);
 
 
-        getApplicationContext().startService(new Intent(getApplicationContext(), TransferService.class));
-        // Initialize the AWSMobileClient if not initialized
-        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
-            @Override
-            public void onResult(UserStateDetails userStateDetails) {
-                Log.i(TAG, "AWSMobileClient initialized. User State is " + userStateDetails.getUserState());
-                uploadWithTransferUtility();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(TAG, "Initialization error.", e);
-            }
-        });
+//        getApplicationContext().startService(new Intent(getApplicationContext(), TransferService.class));
+//        // Initialize the AWSMobileClient if not initialized
+//        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
+//            @Override
+//            public void onResult(UserStateDetails userStateDetails) {
+//                Log.i(TAG, "AWSMobileClient initialized. User State is " + userStateDetails.getUserState());
+//                uploadWithTransferUtility();
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e(TAG, "Initialization error.", e);
+//            }
+//        });
 
     }
 
@@ -212,6 +219,8 @@ private void getList(){
             },
             error -> Log.e("MyAmplifyApp", "List failure", error)
     );
+//todo: 리스트 클릭이벤트 구현후 해당 오브젝트 키값으로 geturi 한뒤 해당 uri를 videoview로 전송.
+    String[] urikey = {""};
 
     ListView listView = (ListView)findViewById(R.id.object_list_View);
 
@@ -219,8 +228,36 @@ private void getList(){
 
     ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,list);
     listView.setAdapter(adapter);
-
     list.addAll(objectLIST);
+
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            String data = (String) adapterView.getItemAtPosition(position);
+            urikey[0] =data;
+            Log.i("MyamplifyApp","urikey from listView "+ urikey[0]);
+            String[] videouri ={""};
+            Amplify.Storage.getUrl(
+                    urikey[0],
+                    result -> {
+                        Log.i("MyAmplifyApp", "Successfully generated: " + result.getUrl());
+                       videouri[0]= result.getUrl().toString();
+                        Log.i("MyamplifyApp","videoUri from listView 1-"+ videouri[0]);
+
+                        Intent intent = new Intent(getApplicationContext(), videoView.class);
+                        intent.putExtra("uri",videouri[0]);
+                        startActivity(intent);
+                    },
+                    error -> Log.e("MyAmplifyApp", "URL generation failure", error)
+
+            );
+
+            Log.i("MyamplifyApp","videoUri from listView 2-"+ videouri[0]); //geturi 보다 먼저 실행된다?
+
+        }
+
+    }
+        );
+
 
 }
 
@@ -245,122 +282,19 @@ private void getList(){
                 storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
         );
 
-//        if (fileUri != null) {
-//            final String fileName = edtFileName.getText().toString();
-//
-//            if (!validateInputFileName(fileName)) {
-//                return;
-//            }
-//
-//            final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//                    "/" + fileName);
-//
-//            createFile(getApplicationContext(), fileUri, file);
-//
-//            TransferUtility transferUtility =
-//                    TransferUtility.builder()
-//                            .context(getApplicationContext())
-//                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-//                            .s3Client(s3Client)
-//                            .build();
-//
-//            TransferObserver uploadObserver =
-//                    transferUtility.upload("public/" + fileName + "." + getFileExtension(fileUri), file);
-//
-//            uploadObserver.setTransferListener(new TransferListener() {
-//
-//                @Override
-//                public void onStateChanged(int id, TransferState state) {
-//                    if (TransferState.COMPLETED == state) {
-//                        Toast.makeText(getApplicationContext(), "Upload Completed!", Toast.LENGTH_SHORT).show();
-//
-//                        file.delete();
-//                    } else if (TransferState.FAILED == state) {
-//                        file.delete();
-//                    }
-//                }
-//
-//                @Override
-//                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-//                    float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-//                    int percentDone = (int) percentDonef;
-//
-//                    tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
-//                }
-//
-//                @Override
-//                public void onError(int id, Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//
-//            });
-//        }
     }
 
     private void downloadFile() {
+
         Amplify.Storage.downloadFile(
                 "testVideo.mp4",
-                //todo: 외부저장소로 저장해야함. s3 권한오류?
-                new File(Environment.getDataDirectory() + "/testVideo.mp4"),
-//                new File(getApplicationContext().getFilesDir() + "/download.mp4"),
+                // 외부저장소-> 최근 버전에선 외부저장소 접근 안됨. MediaStore나 SAF(Storage Access Framework)를 이용 해야함
+               new File(getApplicationContext().getFilesDir() + "/download.mp4"),
                 result -> Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getName()),
                 error -> Log.e("MyAmplifyApp",  "Download Failure", error)
         );
 
-//        if (fileUri != null) {
-//
-//            final String fileName = edtFileName.getText().toString();
-//
-//            if (!validateInputFileName(fileName)) {
-//                return;
-//            }
-//
-//            try {
-//                final File localFile = File.createTempFile("images", getFileExtension(fileUri));
-//
-//                TransferUtility transferUtility =
-//                        TransferUtility.builder()
-//                                .context(getApplicationContext())
-//                                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-//                                .s3Client(s3Client)
-//                                .build();
-//
-//                TransferObserver downloadObserver =
-//                        transferUtility.download("public/" + fileName + "." + getFileExtension(fileUri), localFile);
-//
-//                downloadObserver.setTransferListener(new TransferListener() {
-//
-//                    @Override
-//                    public void onStateChanged(int id, TransferState state) {
-//                        if (TransferState.COMPLETED == state) {
-//                            Toast.makeText(getApplicationContext(), "Download Completed!", Toast.LENGTH_SHORT).show();
-//
-//                            tvFileName.setText(fileName + "." + getFileExtension(fileUri));
-//                            Bitmap bmp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-//                            imageView.setImageBitmap(bmp);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-//                        float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-//                        int percentDone = (int) percentDonef;
-//
-//                        tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
-//                    }
-//
-//                    @Override
-//                    public void onError(int id, Exception ex) {
-//                        ex.printStackTrace();
-//                    }
-//
-//                });
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            Toast.makeText(this, "Upload file before downloading", Toast.LENGTH_LONG).show();
-//        }
+
     }
 
 
@@ -421,11 +355,6 @@ private void getList(){
     }
 
     //-------------------------------------------------------------------------------------------------S3 ↥
-
-
-
-
-
 
 
 
