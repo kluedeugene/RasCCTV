@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
@@ -20,7 +22,11 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
 
-
+    @Override
+    public void onNewToken(@NonNull String s){
+        super.onNewToken(s);
+        Log.d(TAG, "생성된 토큰 : "+s);
+    }
 
     @Override
 

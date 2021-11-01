@@ -182,20 +182,6 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         startService(fcm);
 
 
-//        getApplicationContext().startService(new Intent(getApplicationContext(), TransferService.class));
-//        // Initialize the AWSMobileClient if not initialized
-//        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
-//            @Override
-//            public void onResult(UserStateDetails userStateDetails) {
-//                Log.i(TAG, "AWSMobileClient initialized. User State is " + userStateDetails.getUserState());
-//                uploadWithTransferUtility();
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.e(TAG, "Initialization error.", e);
-//            }
-//        });
 
     }
 
@@ -260,6 +246,10 @@ private void getList(){
 
 
 }
+
+
+
+
 
 
     //------------------------------------------------------------------------------------------------------------S3
