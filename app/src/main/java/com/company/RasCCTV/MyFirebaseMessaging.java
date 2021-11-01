@@ -36,7 +36,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
 
 
-        //todo:2021-10-28 18:46:08.911 3880-3999/com.company.RasCCTV D/MyFirebaseMsgService: From: 582045769298
+        //2021-10-28 18:46:08.911 3880-3999/com.company.RasCCTV D/MyFirebaseMsgService: From: 582045769298
         //2021-10-28 18:46:08.912 3880-3999/com.company.RasCCTV D/MyFirebaseMsgService: Message Notification Body: ㅁㄴㅇㄹ
         //2021-10-28 18:46:55.571 3880-4022/com.company.RasCCTV D/MyFirebaseMsgService: From: 582045769298
         //2021-10-28 18:46:55.572 3880-4022/com.company.RasCCTV D/MyFirebaseMsgService: Message data payload: {body=RasCCTV detect someone, title=RasCCTV detect someone}
